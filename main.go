@@ -8,66 +8,61 @@ import (
 	"net/http"
 	"pdfs3/httpwebdav"
 	"pdfs3/pdfs"
+	"pdfs3/pdfs/pdfs_lower_api"
 	"pdfs3/pdfs/storage"
 	"strconv"
 )
 
-func addSomeFiles(newPdfs webdav.FileSystem) {
-	file, err2 := newPdfs.OpenFile(context.Background(), "/a.txt", 0, 0)
-	if err2 != nil {
-		panic(err2.Error())
-	}
-
-	_, err2 = io.WriteString(file, "你好")
-	if err2 != nil {
-		panic(err2.Error())
-	}
-
-	file, err2 = newPdfs.OpenFile(context.Background(), "/b.txt", 0, 0)
-	if err2 != nil {
-		panic(err2.Error())
-	}
-
-	_, err2 = io.WriteString(file, "你好b")
-	if err2 != nil {
-		panic(err2.Error())
-	}
-
-	file, err2 = newPdfs.OpenFile(context.Background(), "/小黑子/b.txt", 0, 0)
-	if err2 != nil {
-		panic(err2.Error())
-	}
-
-	_, err2 = io.WriteString(file, "小黑子就是你")
-	if err2 != nil {
-		panic(err2.Error())
-	}
-
-	err := newPdfs.Mkdir(context.Background(), "/abc", 0)
+func mkdir(newPdfs webdav.FileSystem, dir string) {
+	err := newPdfs.Mkdir(context.Background(), dir, 0)
 	if err != nil {
-		return
+		panic(err)
 	}
+}
+
+func createFile(newPdfs webdav.FileSystem, path string, v string) {
+	file, err2 := newPdfs.OpenFile(context.Background(), path, 0, 0)
+	if err2 != nil {
+		panic(err2.Error())
+	}
+
+	_, err2 = io.WriteString(file, v)
+	if err2 != nil {
+		panic(err2.Error())
+	}
+}
+
+func addSomeFiles(newPdfs webdav.FileSystem) {
+
+	createFile(newPdfs, "/a.txt", "fuck a.txt")
+	createFile(newPdfs, "/b.txt", "fuck b.txt")
+	//
+	mkdir(newPdfs, "/abc")
+	mkdir(newPdfs, "/小黑子")
+
+	createFile(newPdfs, "/小黑子/小黑子.txt", "你干嘛，哎呦")
+	createFile(newPdfs, "/abc/a.txt", "fuck abc/a.txt")
+	createFile(newPdfs, "/abc/b.txt", "fuck abc/b.txt")
 
 }
 
 func main() {
 
 	port := 8080
-	memoryStorage := storage.NewMemoryStorage(1<<20, 8)
-	newPdfs, err3 := pdfs.NewPdfsFromStorage(memoryStorage)
-
-	if err3 != nil {
-		newPdfs = pdfs.NewPdfsFromStorageAndIgnoreAllError(memoryStorage)
+	memoryStorage := storage.NewMemoryStorage(10<<20, 8)
+	newPdfs := &pdfs.Pdfs{
+		LowerApi: &pdfs_lower_api.PdfsLowerApi{
+			Storage: memoryStorage,
+		},
 	}
 
-	newPdfs.Mkdir(context.Background(), "/abc", 0)
-
-	//addSomeFiles(newPdfs)
 	//
 	//newPdfs = webdav.NewMemFS()
 	////
 	//file, err2 := newPdfs.OpenFile(context.Background(), "a.txt", 578, 438)
 	//print(file, err2)
+
+	addSomeFiles(newPdfs)
 
 	server := httpwebdav.HttpWebDav{
 		Handler: webdav.Handler{

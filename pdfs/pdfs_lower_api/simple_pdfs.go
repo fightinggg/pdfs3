@@ -1,4 +1,4 @@
-package pdfs
+package pdfs_lower_api
 
 import (
 	"bytes"
