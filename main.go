@@ -49,7 +49,7 @@ func addSomeFiles(newPdfs webdav.FileSystem) {
 func main() {
 
 	port := 8080
-	memoryStorage := storage.NewMemoryStorage(10<<20, 8)
+	memoryStorage := storage.NewMemoryStorage(10<<20, 1)
 	newPdfs := &pdfs.Pdfs{
 		LowerApi: &pdfs_lower_api.PdfsLowerApi{
 			Storage: memoryStorage,
