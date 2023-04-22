@@ -10,7 +10,6 @@ import (
 	"pdfs3/pdfs"
 	"pdfs3/pdfs/pdfs_lower_api"
 	"pdfs3/pdfs/storage"
-	"runtime"
 	"strconv"
 )
 
@@ -48,9 +47,6 @@ func addSomeFiles(newPdfs webdav.FileSystem) {
 }
 
 func main() {
-
-	runtime.GOMAXPROCS(1)
-	runtime.MemProfileRate = 10 << 20 // 10MB
 
 	port := 8080
 	memoryStorage := storage.NewMemoryStorage(1<<20, 1)
