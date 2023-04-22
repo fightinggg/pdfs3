@@ -26,8 +26,8 @@ func NewMemoryStorage(blockSize, blockNums int) Storage {
 
 	storage.blockSize = blockSize
 	storage.blockNums = blockNums
-	for i := 0; i < storage.blockSize; i++ {
-		storage.memory = append(storage.memory, make([]byte, blockNums))
+	for i := 0; i < storage.blockNums; i++ {
+		storage.memory = append(storage.memory, make([]byte, blockSize))
 	}
 
 	return storage

@@ -10,6 +10,7 @@ import (
 	"pdfs3/pdfs"
 	"pdfs3/pdfs/pdfs_lower_api"
 	"pdfs3/pdfs/storage"
+	"runtime"
 	"strconv"
 )
 
@@ -48,9 +49,13 @@ func addSomeFiles(newPdfs webdav.FileSystem) {
 
 func main() {
 
+	runtime.GOMAXPROCS(1)
+	runtime.MemProfileRate = 10 << 20 // 10MB
+
 	port := 8080
 	memoryStorage := storage.NewMemoryStorage(1<<20, 1)
-	newPdfs := &pdfs.Pdfs{
+	var newPdfs webdav.FileSystem
+	newPdfs = &pdfs.Pdfs{
 		LowerApi: &pdfs_lower_api.PdfsLowerApi{
 			Storage: memoryStorage,
 		},
@@ -62,7 +67,7 @@ func main() {
 	//file, err2 := newPdfs.OpenFile(context.Background(), "a.txt", 578, 438)
 	//print(file, err2)
 
-	//addSomeFiles(newPdfs)
+	addSomeFiles(newPdfs)
 
 	server := httpwebdav.HttpWebDav{
 		Handler: webdav.Handler{
