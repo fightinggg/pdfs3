@@ -49,7 +49,7 @@ func addSomeFiles(newPdfs webdav.FileSystem) {
 func main() {
 
 	port := 8080
-	memoryStorage := storage.NewMemoryStorage(10<<20, 1)
+	memoryStorage := storage.NewMemoryStorage(1<<20, 1)
 	newPdfs := &pdfs.Pdfs{
 		LowerApi: &pdfs_lower_api.PdfsLowerApi{
 			Storage: memoryStorage,
@@ -62,7 +62,7 @@ func main() {
 	//file, err2 := newPdfs.OpenFile(context.Background(), "a.txt", 578, 438)
 	//print(file, err2)
 
-	addSomeFiles(newPdfs)
+	//addSomeFiles(newPdfs)
 
 	server := httpwebdav.HttpWebDav{
 		Handler: webdav.Handler{
