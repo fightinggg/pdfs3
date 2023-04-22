@@ -37,10 +37,13 @@ func handleDirList(fs webdav.FileSystem, w http.ResponseWriter, req *http.Reques
 		log.Print(w, "Error reading directory", http.StatusInternalServerError)
 		return false
 	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
 	if len(dirs) == 0 {
-		fmt.Fprintf(w, "<pre>Nothing Here</pre>")
+		w.WriteHeader(404)
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprintf(w, "404 NOT FOUND")
 	} else {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		fmt.Fprintf(w, "<pre>\n")
 		for _, d := range dirs {
 			name := d.Name()

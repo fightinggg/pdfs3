@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"pdfs3/pdfs/pdfs_err"
 	"pdfs3/pdfs/storage"
 	"strings"
@@ -37,6 +38,8 @@ func (api *PdfsLowerApi) Rename(name string, name2 string) error {
 }
 
 func (api *PdfsLowerApi) Stat(path string) (*Menu, error) {
+	log.Printf("Stat %s", path)
+
 	if strings.HasSuffix(path, "/") {
 		path = path[:len(path)-1]
 	}
@@ -79,6 +82,7 @@ func (api *PdfsLowerApi) writeMenus(blockIndex int, menus *MenuBlock) error {
 }
 
 func (api *PdfsLowerApi) readMenus(blockIndex int) (*MenuBlock, error) {
+
 	read := api.Storage.Read(blockIndex)
 	all, err := io.ReadAll(read)
 	if err != nil {
@@ -108,6 +112,8 @@ func (api *PdfsLowerApi) readMenus(blockIndex int) (*MenuBlock, error) {
 }
 
 func (api *PdfsLowerApi) Ls(path string) ([]Menu, error) {
+	log.Printf("Ls %s", path)
+
 	if !strings.HasSuffix(path, "/") {
 		path = path + "/"
 	}
@@ -146,6 +152,7 @@ func (api *PdfsLowerApi) Ls(path string) ([]Menu, error) {
 }
 
 func (api *PdfsLowerApi) Read(path string) (io.Reader, error) {
+	log.Printf("read %s", path)
 	var nextIndex = 0
 	for true {
 		menus, err := api.readMenus(nextIndex)
@@ -174,6 +181,7 @@ func (api *PdfsLowerApi) Read(path string) (io.Reader, error) {
 }
 
 func (api *PdfsLowerApi) Mkdir(path string) error {
+	log.Printf("mkdir %s", path)
 	var nextIndex = 0
 	for true {
 		thisIndex := nextIndex
@@ -211,6 +219,7 @@ func (api *PdfsLowerApi) Mkdir(path string) error {
 }
 
 func (api *PdfsLowerApi) Write(path string, offset int64, size int64, reader io.Reader) error {
+	log.Printf("write %s", path)
 	data, err := io.ReadAll(reader)
 	if err != nil {
 		return err
@@ -264,6 +273,7 @@ func (api *PdfsLowerApi) Write(path string, offset int64, size int64, reader io.
 }
 
 func (api *PdfsLowerApi) Delete(path string) error {
+	log.Printf("delete %s", path)
 	var nextIndex = 0
 	for true {
 		thisIndex := nextIndex
