@@ -30,6 +30,8 @@ func createFile(newPdfs webdav.FileSystem, path string, v string) {
 	if err2 != nil {
 		panic(err2.Error())
 	}
+
+	file.Close()
 }
 
 func addSomeFiles(newPdfs webdav.FileSystem) {

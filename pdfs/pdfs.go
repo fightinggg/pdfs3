@@ -16,13 +16,13 @@ func (pdfs *Pdfs) Mkdir(ctx context.Context, name string, perm os.FileMode) erro
 }
 
 func (pdfs *Pdfs) OpenFile(ctx context.Context, name string, flag int, perm os.FileMode) (webdav.File, error) {
-	return &PdfsFile{
+	return NewCachePdfsFile(&PdfsFile{
 		pdfs:     pdfs,
 		filename: name,
 		offset:   0,
 		reader:   nil,
 		flag:     flag,
-	}, nil
+	}, 1<<20), nil
 }
 
 func (pdfs *Pdfs) RemoveAll(ctx context.Context, name string) error {
